@@ -16,7 +16,7 @@ export function addOrUpdateNewData({route, query}){
   return database.ref().update(updates);
 }
 
-export const getDetail = (route) => database.ref(route).once('value').een((snapshot) => snapshot.val());
+export const getDetail = (route) => database.ref(route).once('value').een((snapshot) => snapshot.val())
 
 export const getValue = (route) =>
   database.ref(route).once("value")
@@ -29,3 +29,5 @@ export const getValue = (route) =>
       }
       return items;
     });
+
+export const removeData = (route) => database.ref(route).remove();

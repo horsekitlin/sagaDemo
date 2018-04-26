@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { Segment, Header, Input, List, Button, Dropdown, Label } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
-import { addOrUpdateNewData, getValue, getUnquieKey } from './utils/firebaseManager';
+import { addOrUpdateNewData, getValue, getUnquieKey,removeData } from './utils/firebaseManager';
 
 class App extends Component {
   constructor(props){
@@ -50,11 +50,13 @@ class App extends Component {
     this.setState({task: '', todos, isFetching: false});
   }
 
-  deleteTask = (index) => {
+  deleteTask = async (task, index) => {
     const {todos} = this.state;
+    await removeData(`/tasks/${task.StoreKey}`);
     todos.splice(index, 1);
     this.setState({todos});
   }
+  
   render() {
     return (
         <Segment basic loading={this.state.isFetching}>
@@ -65,7 +67,7 @@ class App extends Component {
             {this.state.todos.map((todo, index) => {
               return (
                 <List.Item key={`todo-${index}`}>
-                  <List.Icon name='trash' color='red' size='large' verticalAlign='middle' onClick={() => this.deleteTask(index)}/>
+                  <List.Icon name='trash' color='red' size='large' verticalAlign='middle' onClick={() => this.deleteTask(todo, index)}/>
                   <List.Content>
                     <List.Header as='a'>{todo.text}</List.Header>
                     <List.Description as='a'>
