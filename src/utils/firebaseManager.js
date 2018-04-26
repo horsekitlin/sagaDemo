@@ -7,7 +7,7 @@ const database = firebase.database();
 
 export const getUnquieKey = (route) => database.ref().child(route).push().key
 
-export function addNewData({route, query}){
+export function addOrUpdateNewData({route, query}){
   if(query.StoreKey === undefined) query.StoreKey = getUnquieKey(route);
 
   const updates = {
