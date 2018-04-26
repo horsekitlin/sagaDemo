@@ -28,7 +28,6 @@ class App extends Component {
       created_at: moment().format('YYYY MM DD hh:mm:ss')
     }
     await addNewData({route: '/tasks', query: task});
-    console.log(task);
     return task;
   }
 
