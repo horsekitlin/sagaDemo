@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { Segment, Header, Input, List, Button } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
+import {addNewData} from './utils/firebaseManager';
 
 class App extends Component {
   constructor(props){
@@ -13,18 +14,23 @@ class App extends Component {
     }
   }
 
-  createTask(text){
-    return {
+  async createTask(text){
+    const task =  {
       text,
+      status: 'queue',
+      updated_at: moment().format('YYYY MM DD hh:mm:ss'),
       created_at: moment().format('YYYY MM DD hh:mm:ss')
     }
+    await addNewData({route: '/tasks', query: task});
+    return task;
   }
 
-  addTask = (text) => {
-    const task = this.createTask(text);
+  addTask = async (text) => {
+    this.setState({isFetching: true});
+    const task = await this.createTask(text);
     const {todos} = this.state;
     todos.push(task);
-    this.setState({todos});
+    this.setState({todos, isFetching: false});
   }
 
   deleteTask = (index) => {
@@ -34,7 +40,7 @@ class App extends Component {
   }
   render() {
     return (
-        <Segment>
+        <Segment basic loading={this.state.isFetching}>
           <Header>Todo Demo</Header>
           <Input onChange={(e, {value}) => this.setState({task: value})} value={this.state.task}/> <Button icon='plus'  onClick={(e, {value}) => this.addTask(value)} value={this.state.task}></Button>
           <Segment basic>
