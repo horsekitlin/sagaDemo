@@ -4,6 +4,17 @@ import { Segment, Header, Input, List, Button, Dropdown, Label } from 'semantic-
 import 'semantic-ui-css/semantic.min.css';
 import { addOrUpdateNewData, getValue, getUnquieKey,removeData } from './utils/firebaseManager';
 
+const TaskStatus = ({todo}) =>{
+  switch(todo.status){
+    case 'done':
+      return <Label color='green'>完成</Label>
+    case 'processing':
+      return <Label color='orange'>進行中</Label>
+    default:
+      return <Label color='blue'>想要做</Label>
+  }
+}
+
 class App extends Component {
   constructor(props){
     super(props);
@@ -56,7 +67,7 @@ class App extends Component {
     todos.splice(index, 1);
     this.setState({todos});
   }
-  
+
   render() {
     return (
         <Segment basic loading={this.state.isFetching}>
@@ -84,7 +95,7 @@ class App extends Component {
                     </Dropdown.Menu>
                   </Dropdown>
                   <List.Description>
-                    <Label>{todo.status}</Label>
+                    <TaskStatus todo={todo} />
                   </List.Description>
                   </List.Content>
                 </List.Item>
