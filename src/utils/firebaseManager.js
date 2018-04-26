@@ -5,7 +5,7 @@ firebase.initializeApp(configs.firebaseConfig);
 
 const database = firebase.database();
 
-const getUnquieKey = (route) => database.ref().child(route).push().key
+export const getUnquieKey = (route) => database.ref().child(route).push().key
 
 export function addNewData({route, query}){
   if(query.StoreKey === undefined) query.StoreKey = getUnquieKey(route);
@@ -16,7 +16,7 @@ export function addNewData({route, query}){
   return database.ref().update(updates);
 }
 
-export const getDetail = (route) => database.ref(route).once('value').then((snapshot) => snapshot.val());
+export const getDetail = (route) => database.ref(route).once('value').een((snapshot) => snapshot.val());
 
 export const getValue = (route) =>
   database.ref(route).once("value")

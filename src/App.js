@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { Segment, Header, Input, List, Button } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
-import {addNewData} from './utils/firebaseManager';
+import { addNewData, getValue, getUnquieKey } from './utils/firebaseManager';
 
 class App extends Component {
   constructor(props){
@@ -14,14 +14,21 @@ class App extends Component {
     }
   }
 
+  async componentDidMount(){
+    this.setState({isFetching: true});
+    const tasks = await getValue('/tasks');
+    this.setState({todos: tasks, isFetching: false});
+  }
   async createTask(text){
     const task =  {
+      StoreKey: getUnquieKey('/tasks'),
       text,
       status: 'queue',
       updated_at: moment().format('YYYY MM DD hh:mm:ss'),
       created_at: moment().format('YYYY MM DD hh:mm:ss')
     }
     await addNewData({route: '/tasks', query: task});
+    console.log(task);
     return task;
   }
 
@@ -30,7 +37,7 @@ class App extends Component {
     const task = await this.createTask(text);
     const {todos} = this.state;
     todos.push(task);
-    this.setState({todos, isFetching: false});
+    this.setState({task: '', todos, isFetching: false});
   }
 
   deleteTask = (index) => {
