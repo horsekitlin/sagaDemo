@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 import Main from '../components/Main';
 import { getTasksAction} from '../actions/taskActions';
-const mapStateToProps = ({status}) => ({
+const mapStateToProps = ({status, tasks}) => ({
   status,
+  tasks,
 })
 
 const mapDispatchToProps = dispatch => ({

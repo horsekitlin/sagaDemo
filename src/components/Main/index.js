@@ -4,8 +4,8 @@ import { Segment, Header, Input, List, Button, Dropdown, Label } from 'semantic-
 import 'semantic-ui-css/semantic.min.css';
 import { addOrUpdateNewData, getValue, getUnquieKey,removeData } from '../../utils/firebaseManager';
 
-const TaskStatus = ({todo}) =>{
-  switch(todo.status){
+const TaskStatus = ({task}) =>{
+  switch(task.status){
     case 'done':
       return <Label color='green'>完成</Label>
     case 'processing':
@@ -19,7 +19,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      todos: [],
+      tasks: [],
       isFetching: false,
       task: ''
     }
@@ -29,7 +29,7 @@ class App extends Component {
     this.props.getTasks();
     this.setState({isFetching: true});
     const tasks = await getValue('/tasks');
-    this.setState({todos: tasks, isFetching: false});
+    this.setState({tasks: tasks, isFetching: false});
   }
 
   async createTask(text){
@@ -47,26 +47,26 @@ class App extends Component {
   updateTaskStatus = async (task, index, status) => {
     this.setState({isFetching: true});
     task.status = status;
-    const {todos} = this.state;
-    todos.splice(index, 1);
-    todos.splice(index, 0, task);
+    const {tasks} = this.state;
+    tasks.splice(index, 1);
+    tasks.splice(index, 0, task);
     await addOrUpdateNewData({route: '/tasks', query: task});
-    this.setState({todos, isFetching: false});
+    this.setState({tasks, isFetching: false});
   }
 
   addTask = async (text) => {
     this.setState({isFetching: true});
     const task = await this.createTask(text);
-    const {todos} = this.state;
-    todos.push(task);
-    this.setState({task: '', todos, isFetching: false});
+    const {tasks} = this.state;
+    tasks.push(task);
+    this.setState({task: '', tasks, isFetching: false});
   }
 
   deleteTask = async (task, index) => {
-    const {todos} = this.state;
+    const {tasks} = this.state;
     await removeData(`/tasks/${task.StoreKey}`);
-    todos.splice(index, 1);
-    this.setState({todos});
+    tasks.splice(index, 1);
+    this.setState({tasks});
   }
 
   render() {
@@ -75,28 +75,29 @@ class App extends Component {
           <Header>Todo Demo</Header>
           <Input onChange={(e, {value}) => this.setState({task: value})} value={this.state.task}/> <Button icon='plus'  onClick={(e, {value}) => this.addTask(value)} value={this.state.task}></Button>
           <Segment basic>
+          {this.props.tasks.error && <Label color='red'>  哎呀!出錯了! </Label>}
           <List divided relaxed>
-            {this.state.todos.map((todo, index) => {
+            {this.props.tasks.list.map((task, index) => {
               return (
                 <List.Item key={`todo-${index}`}>
-                  <List.Icon name='trash' color='red' size='large' verticalAlign='middle' onClick={() => this.deleteTask(todo, index)}/>
+                  <List.Icon name='trash' color='red' size='large' verticalAlign='middle' onClick={() => this.deleteTask(task, index)}/>
                   <List.Content>
-                    <List.Header as='a'>{todo.text}</List.Header>
+                    <List.Header as='a'>{task.text}</List.Header>
                     <List.Description as='a'>
-                      {todo.created_at}
+                      {task.created_at}
                     </List.Description>
                   </List.Content>
                   
                   <List.Content floated='right'>
                   <Dropdown item text='修改狀態'>
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => this.updateTaskStatus(todo, index, 'queue')}>To Do</Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.updateTaskStatus(todo, index, 'processing')}>Processing</Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.updateTaskStatus(todo, index, 'done')}>done</Dropdown.Item>
+                      <Dropdown.Item onClick={() => this.updateTaskStatus(task, index, 'queue')}>To Do</Dropdown.Item>
+                      <Dropdown.Item onClick={() => this.updateTaskStatus(task, index, 'processing')}>Processing</Dropdown.Item>
+                      <Dropdown.Item onClick={() => this.updateTaskStatus(task, index, 'done')}>done</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                   <List.Description>
-                    <TaskStatus todo={todo} />
+                    <TaskStatus task={task} />
                   </List.Description>
                   </List.Content>
                 </List.Item>

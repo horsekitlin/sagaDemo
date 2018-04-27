@@ -1,17 +1,17 @@
 export default function promiseMiddleware( objMethods ) {
   return (next) => (action) => {
-    const { promise, types, ...rest } = action;
+    const { promise, types } = action;
     if (!promise) {
       return next(action);
     }
 
     const [REQUEST, SUCCESS, ERROR] = types;
 
-    next({ ...rest, type: REQUEST });
-    
+    next({ type: REQUEST });
+    // return next({ type: ERROR })
     return promise.then(
-      (result) => next({ ...rest, result, type: SUCCESS }),
-      (error) => next({ ...rest, error, type: ERROR })
+      (payload) => next({ payload, type: SUCCESS }),
+      (error) => next({ payload:error, type: ERROR })
     );
   };
 }
