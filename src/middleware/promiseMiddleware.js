@@ -1,5 +1,6 @@
 export default function promiseMiddleware( objMethods ) {
   return (next) => (action) => {
+    console.log('promise Middleware');
     const { promise, types } = action;
     if (!promise) {
       return next(action);

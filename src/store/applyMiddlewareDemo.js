@@ -1,15 +1,9 @@
-
 function applyMiddlewareDemo(...middlewares){
-  const args = [
-    dispatchStr => console.log('dispatch function', dispatchStr) || 'dispatchStr',
-    getStateStr => console.log('getState function', getStateStr) || 'getStateStr'
-  ];
-
-  middlewares.map(middleware => middleware(...args));
+  middlewares.map(middleware => middleware());
 }
 
-const step1 = (dispatch) => console.log('step1', dispatch('廣播'));
-const step2 = (dispatch, getState) => console.log('step2', getState('拿取 store data'));
+const step1 = () => console.log('step1');
+const step2 = () => console.log('step2');
 const step3 = () => console.log('step3');
 const step4 = () => console.log('step4');
 

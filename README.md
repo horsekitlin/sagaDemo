@@ -27,3 +27,6 @@
 
 [firebase console](https://console.firebase.google.com)
 
+#### 補充資料
+
+[middleware](https://developer.mozilla.org/en-US/docs/Glossary/Middleware)
